@@ -76,7 +76,7 @@ Drone's response to the handshake:
 | 0x18 ... 0x19 | type5 receive window start
 | 0x1a ... 0x1b | type5 receive window end
 | 0x1c ... X-1  | type5 resend request list (total length: 2+2*N, where N is the number of sequence numbers in the list)
-| X    ... X+1  | total length of the remaining 0x55 payload
+| X    ... X+1  | total length of the remaining DJI MB Protocol payload
 | X+2  ... end  | One or more DJI MB protocol chunks.
 
 ## Packet Type `0x02`
@@ -108,6 +108,10 @@ Drone's response to the handshake:
 |---------------|-------------
 | 0x08 ... 0x09 | type3 send window start
 | 0x0a ... 0x0b | type3 send window end
+| 0x0c ... 0x0d | type3 resend state 1
+| 0x0e ... 0x0f | type3 resend state 2
+| 0x10          | **unknown** (starts at 1 and increments by 1 for every packet of type `0x03`)
+| 0x11 ... 0x13 | **unknown** (always "0x01 0x00 0x00" in my observations)
 | 0x14 ... end  | DJI MB protocol payload (one long chunk)
 
 ## Packet Type `0x04`/`0x06`
@@ -130,9 +134,9 @@ It seems like type 4 is always used to acknowledges end-of-frame packets (*TODO:
 | Y    ... Y+1  | type5 send window start
 | Y+2  ... Y+3  | type5 send window end
 | Y+4  ... Y+5  | type5 resend state 1
-| Y+6  ... Y+7  | always "0x00 0x00"
+| Y+6  ... Y+7  | type5 resend state 2
 | Y+8  ... Y+9  | length of the remaining DJI MB protocol payload
-| Y+10 ... end  | DJI MB protocol payload (I only observed packets zero, one, or rarely two 0x55 chunks and each 0x55 chunk had always length 0x1a)
+| Y+10 ... end  | DJI MB protocol payload (here I only observed MB packets going from "0x02" (App) to "0x09" (HD transmission RC side). Either zero, one or two of these packets were present.)
 
 ## Packet Type `0x05`
 
@@ -148,8 +152,7 @@ It seems like type 4 is always used to acknowledges end-of-frame packets (*TODO:
 | 0x0c ... 0x0d | type5 resend state 1
 | 0x0e ... 0x0f | type5 resend state 2
 | 0x10          | **unknown** (increments by 1 for every packet of type `0x05`)
-| 0x11          | **unknown** (always "0x01")
-| 0x12 ... 0x13 | **unknown** (always "0x00 0x00")
+| 0x11 ... 0x13 | **unknown** (always "0x01 0x00 0x00" in my observations)
 | 0x14 ... end  | DJI MB protocol payload
 
 
