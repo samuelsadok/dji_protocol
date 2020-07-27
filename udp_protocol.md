@@ -1,9 +1,9 @@
 # DJI Proprietary UDP Protocol
 
-This document talks about the proprietary UDP protocol which is used between the DJI Go 4 app and a Mavic Pro drone when the phone is connected to the drone directly via WiFi (without an intermediate remote control). It is likely that the same protocol is used on other DJI drones too.
+This document talks about the proprietary UDP protocol which is used between the DJI Go 4 app and a Mavic Pro drone when the phone is connected to the drone directly via WiFi (without an intermediate remote control). It also works across the RNDIS interface when the drone is connected directly via USB. It is likely that the same protocol is used on other DJI drones too.
 
 Some general notes:
- - All communication takes place via UDP between 192.168.2.1:9003 (aircraft) and 192.168.2.20:12346 (phone).
+ - All communication takes place via UDP between 192.168.2.1:9003 (aircraft) and 192.168.2.20:12346 (phone). The drone will respond fine when the App is using a differen UDP port. The drone will also respond fine when addressed through the RNDIS interface (use 192.168.42.2:9003 in this case).
  - All integer numbers are in little endian.
  - The protocol described here encapsulates another protocol which we call the "[DJI MB protocol](mb_protocol.md)" here. It is easily recognizable by the leading `0x55` in front of every chunk. The DJI MB protocol is used in many places (also drone internal communication) and it's the one that carries all the command and telemetry data except for the video feed.
 
@@ -100,9 +100,13 @@ Drone's response to the handshake:
 ## Packet Type `0x03`
 
  - Direction: drone to app
- - Purpose: **unknown**
+ - Purpose: Contains telemetry data encapsulated in the DJI MB protocol. The difference to type 1 packets is that this packet type is acknowledged by the App. The MB sequence number counting is separate from type 1 packets. The only observed payload in this packet was:
+   - Sender: 0x09 (Camera)
+   - Receiver: 0x02 (App)
+   - Command Set: 0x00
+   - Command: FileTrans Camera-to-App (0x27)
  - Has sequence number: yes
- - Frequency: Very rare (in 40s of logs only 3 of these packets were observed). This apparently needs to be triggered by the app since the drone does not send this packet in the minimal example.
+ - Frequency: Very rare. Probably as a result of a request made by the App.
 
 | offset        | description
 |---------------|-------------

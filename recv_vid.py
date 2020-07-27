@@ -25,7 +25,8 @@
 import socket
 import struct
 
-UDP_REMOTE_IP = "192.168.2.1"
+UDP_REMOTE_IP = "192.168.2.1" # Use this if the drone is connected via WiFi
+#UDP_REMOTE_IP = "192.168.42.2" # Use this if the drone is connected directly via USB
 UDP_REMOTE_PORT = 9003
 UDP_LOCAL_PORT = 12346
 
