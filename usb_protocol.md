@@ -1,4 +1,6 @@
-# DJI Proprietary USB Protocol
+# DJI Mavic USB-to-PC Protocol
+
+This page describes the USB connection of a DJI Mavic Pro to a PC. This is different from the way a DJI device (remote control or goggles) presents itself to a mobile phone. For the latter, see [here](usb_mobile_protocol.md).
 
 The DJI Mavic Pro presents itself to a USB host as a composite device with several functions (aka interface associations):
 
